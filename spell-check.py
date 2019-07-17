@@ -45,6 +45,9 @@ parser.add_argument('-I', '--include-dir',
 parser.add_argument('-std=c++11',
     dest='langstd', action='store_const', const='c++11',
     help='selects the C++11 language standard')
+parser.add_argument('-std=c99',
+    dest='langstd', action='store_const', const='c99',
+    help='selects the C99 language standard')
 parser.add_argument('-std=c++14',
     dest='langstd', action='store_const', const='c++14',
     help='selects the C++14 language standard')
@@ -103,7 +106,7 @@ if cmdlineargs.verbose:
 
 # Note: hunspell has issues with use of the apostrophe character.
 # For details, see: https://github.com/marcoagpinto/aoo-mozilla-en-dict/issues/23
-hunspellargs = ["hunspell", "-a"]
+hunspellargs = ["hunspell", "-a", "-d", "fr"]
 if cmdlineargs.dict:
     hunspellargs = hunspellargs + ["-p"] + cmdlineargs.dict
 if cmdlineargs.verbose:
