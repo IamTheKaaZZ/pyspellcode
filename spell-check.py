@@ -63,6 +63,9 @@ parser.add_argument('--show-file-progress',
 parser.add_argument('-p', '--personal-dict',
     dest='dict', nargs=1, metavar='<full-file-path>',
     help='specify the fullpath to a personal dictionary')
+parser.add_argument('-c', '--collect',
+    dest='collect', action='store_true',
+    help='output deduplicated list of unrecognized words')
 parser.add_argument('filenames',
     metavar='filename', type=extant_file, nargs='+',
     help='filename to inspect')
@@ -124,6 +127,8 @@ def check_word(word):
         if not line.startswith("*"):
             isokay = False
     return isokay
+
+collectedUnrecognizedWords = set()
 
 def check_file(path):
     argsneeded = clangargs + [path]
@@ -240,10 +245,13 @@ def check_file(path):
                     misspellings += 1
             if not unrecognizedwords:
                 continue
-            if not filenameShown:
-                print("file {0}:".format(path))
-                filenameShown = True
-            print("  line #{0}, unrecognized words: {1}".format(srclinenum, unrecognizedwords))
+            if cmdlineargs.collect:
+                collectedUnrecognizedWords.update(unrecognizedwords)
+            else:
+                if not filenameShown:
+                    print("file {0}:".format(path))
+                    filenameShown = True
+                print("  line #{0}, unrecognized words: {1}".format(srclinenum, unrecognizedwords))
     clangpipe.wait() # Blocks until clang exits
     if cmdlineargs.show_file_progress and misspellings == 0:
         print("  no unrecognized words")
@@ -252,6 +260,10 @@ def check_file(path):
 totalmisspellings = 0
 for file in files:
     totalmisspellings += check_file(file)
+
+if cmdlineargs.collect:
+    print("Found these unrecognized words ...")
+    print("\n".join(list(collectedUnrecognizedWords)))
 
 hunspellpipe.stdin.close()
 hunspellpipe.wait() # Blocks until hunspell exits
