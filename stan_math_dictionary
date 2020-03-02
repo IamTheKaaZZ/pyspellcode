@@ -1,3 +1,4 @@
+
 042e
 065357e
 0f
@@ -48,6 +49,7 @@ affine
 Aklam
 al
 Al
+algebra
 alloc
 allocator
 apply
@@ -102,9 +104,11 @@ CDF
 CDFS
 ceil
 chainablestack
+ChainableStack
 charlesm93
 Cheb
 Cholesky
+cholesky_block
 cloglog
 cmath
 ColsAtCompileTime
@@ -161,6 +165,7 @@ deriv
 destructor
 destructors
 det
+Df
 diff
 differentation
 differentiable
@@ -169,6 +174,7 @@ dimensionality
 dimensioned
 disjunction
 dL
+dln
 doesn
 dof
 doubles
@@ -242,6 +248,7 @@ heteroskedasticity
 Higham
 html
 http
+https
 Hyberbolic
 hypergeometric
 i
@@ -263,6 +270,7 @@ Integrators
 internal::get
 ints
 Inverse
+Inverse-Wishart
 invertible
 inv_Phi
 is
@@ -289,11 +297,15 @@ KINSol
 k-th
 Kurowicka
 lambda
+lambda1
+lambda2
 large
 lbeta
 lccdf
 LDL
 ldlt
+LDLT
+left
 len
 Levie
 Lewandowski
@@ -306,6 +318,7 @@ ln
 log10
 log1p
 log2
+logistic
 logit
 logits
 lognormal
@@ -325,6 +338,7 @@ math
 MATH
 Mathematica
 matrix
+max
 maxfev
 mdivide
 memalloc
@@ -342,6 +356,7 @@ msg2
 msgs
 Multinomial
 multiplicable
+multiply
 multiplying
 mxm
 mxn
@@ -478,9 +493,13 @@ SPEC
 specialisation
 specialisations
 square
+src
 stan
 STAN
+stan::math::cholesky
 stan::math::fvar
+stan::math::lgamma
+stan::math::tgamma
 stan::math::var
 STAN_MPI
 start1
@@ -546,6 +565,7 @@ ub
 unary
 univariate
 unnormalized
+Upper
 useful
 v
 v1
@@ -589,25 +609,4 @@ y1
 y2
 yizhang
 yp0
-yy0
-
-algebra
-ChainableStack
-cholesky_block
-Df
-dln
-https
-Inverse-Wishart
-lambda1
-lambda2
-LDLT
-left
-logistic
-max
-multiply
-src
-stan::math::cholesky
-stan::math::lgamma
-stan::math::tgamma
-Upper
 yy0
