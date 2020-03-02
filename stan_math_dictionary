@@ -54,6 +54,7 @@ Aklam
 al
 Al
 AlignedBit
+alloc
 allocator
 allocators
 AmbientDim
@@ -488,6 +489,7 @@ pos
 Postfix
 Postorder
 precision
+precomputed
 preconditioner
 preds
 prefactor
@@ -701,3 +703,7 @@ yizhang
 yp0
 yy0
 Zagier
+partials
+vec
+rhs
+adjoint
