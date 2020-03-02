@@ -89,7 +89,7 @@ files = cmdlineargs.filenames
 
 # Need various clang options...
 # -fsyntax-only tells clang to only examine syntax and to not generate object file
-clangargs = ["clang", "-Xclang", "-ast-dump", "-D_REENTRANT", "-fsyntax-only", "-fno-color-diagnostics"]
+clangargs = ["clang", "-Xclang", "-ast-dump", "-fsyntax-only", "-fno-color-diagnostics"]
 clangargs.append('-std=' + langstd)
 if cmdlineargs.all_comments:
     clangargs.append('-fparse-all-comments')
