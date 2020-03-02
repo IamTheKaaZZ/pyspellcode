@@ -106,7 +106,7 @@ if cmdlineargs.verbose:
 
 # Note: hunspell has issues with use of the apostrophe character.
 # For details, see: https://github.com/marcoagpinto/aoo-mozilla-en-dict/issues/23
-hunspellargs = ["hunspell", "-a", "-d", "fr"]
+hunspellargs = ["hunspell", "-a"]
 if cmdlineargs.dict:
     hunspellargs = hunspellargs + ["-p"] + cmdlineargs.dict
 if cmdlineargs.verbose:
