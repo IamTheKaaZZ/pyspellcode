@@ -63,6 +63,10 @@ parser.add_argument('--show-file-progress',
 parser.add_argument('-p', '--personal-dict',
     dest='dict', nargs=1, metavar='<full-file-path>',
     help='specify the fullpath to a personal dictionary')
+parser.add_argument('-x', '--extra-clang-arg',
+    dest='extraClangArguments', action='append', default=list(),
+    metavar='<extra-argument-to-clang>',
+    help='extra argument for clang')
 parser.add_argument('filenames',
     metavar='filename', type=extant_file, nargs='+',
     help='filename to inspect')
@@ -78,9 +82,6 @@ langstd = 'c++11'
 if cmdlineargs.langstd:
     langstd = cmdlineargs.langstd
 
-# Get command line argument using the list provided from sys.argv.
-# Don't need argv0 though so slice over it...
-#files = sys.argv[1:]
 files = cmdlineargs.filenames
 
 # Need various clang options...
@@ -93,7 +94,7 @@ if cmdlineargs.includedirs:
     for includedirs in cmdlineargs.includedirs:
         includedir = string.join(includedirs)
         clangargs.append('-I' + includedir)
-        #clangargs.extend(includedir)
+clangargs.extend(cmdlineargs.extraClangArguments)
 if cmdlineargs.verbose:
     print("argv for AST generator: {0}".format(clangargs))
 
