@@ -1,3 +1,6 @@
+# Fork
+This version of pyspellcode has been hacked up to be used on the Stan Math library.
+
 # pyspellcode
 Python script for using `clang` and `hunspell` for spell checking source code comments.
 
@@ -9,28 +12,3 @@ For the most up-to-date command line argument usage, run the script with the `--
 
 ```
 $ ./spell-check.py --help
-usage: spell-check.py [-h] [-v] [-I <dir>] [-std=c++11] [-std=c++14]
-                      [-std=c++17] [-a] [-e] [--show-file-progress]
-                      [-p <full-file-path>]
-                      filename [filename ...]
-
-positional arguments:
-  filename              filename to inspect
-
-optional arguments:
-  -h, --help            show this help message and exit
-  -v, --verbose         gets more verbose to aid with diagnostics
-  -I <dir>, --include-dir <dir>
-                        adds directory to include search path
-  -std=c++11            selects the C++11 language standard
-  -std=c++14            selects the C++14 language standard
-  -std=c++17            selects the C++17 language standard
-  -a, --all-comments, -fparse-all-comments
-                        results in checking all comments
-  -e, -Werror, --error-exit
-                        nonzero exit status for unrecognized words
-  --show-file-progress  shows filenames and results even when no unrecognized
-                        words
-  -p <full-file-path>, --personal-dict <full-file-path>
-                        specify the fullpath to a personal dictionary
-```
