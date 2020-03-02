@@ -246,12 +246,12 @@ def check_file(path):
                     misspellings += 1
             if not unrecognizedwords:
                 continue
+            if not filenameShown:
+                print("file {0}:".format(path))
+                filenameShown = True
             if cmdlineargs.collect:
                 collectedUnrecognizedWords.update(unrecognizedwords)
-            else:
-                if not filenameShown:
-                    print("file {0}:".format(path))
-                    filenameShown = True
+            if not cmdlineargs.collect or cmdlineargs.show_file_progress:
                 print("  line #{0}, unrecognized words: {1}".format(srclinenum, unrecognizedwords))
     clangpipe.wait() # Blocks until clang exits
     if cmdlineargs.show_file_progress and misspellings == 0:
@@ -263,8 +263,11 @@ for file in files:
     totalmisspellings += check_file(file)
 
 if cmdlineargs.collect:
-    print("Found these unrecognized words ...")
-    print("\n".join(list(collectedUnrecognizedWords)))
+    if collectedUnrecognizedWords:
+        print("Found these unrecognized words ...")
+        print("\n".join(list(collectedUnrecognizedWords)))
+    else:
+        print("All words recognized.")
 
 hunspellpipe.stdin.close()
 hunspellpipe.wait() # Blocks until hunspell exits
