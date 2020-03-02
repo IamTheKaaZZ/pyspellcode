@@ -246,11 +246,11 @@ def check_file(path):
                     misspellings += 1
             if not unrecognizedwords:
                 continue
-            if not filenameShown:
-                print("file {0}:".format(path))
-                filenameShown = True
             if cmdlineargs.collect:
                 collectedUnrecognizedWords.update(unrecognizedwords)
+            elif not filenameShown:
+                print("file {0}:".format(path))
+                filenameShown = True
             if not cmdlineargs.collect or cmdlineargs.show_file_progress:
                 print("  line #{0}, unrecognized words: {1}".format(srclinenum, unrecognizedwords))
     clangpipe.wait() # Blocks until clang exits
