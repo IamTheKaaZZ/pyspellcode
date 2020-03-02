@@ -9,9 +9,10 @@ For the most up-to-date command line argument usage, run the script with the `--
 
 ```
 $ ./spell-check.py --help
-usage: spell-check.py [-h] [-v] [-I <dir>] [-std=c++11] [-std=c++14]
-                      [-std=c++17] [-a] [-e] [--show-file-progress]
-                      [-p <full-file-path>]
+usage: spell-check.py [-h] [-v] [-I <dir>] [-std=c++11] [-std=c99]
+                      [-std=c++14] [-std=c++17] [-a] [-e]
+                      [--show-file-progress] [-p <full-file-path>] [-c]
+                      [-x <extra-argument-to-clang>]
                       filename [filename ...]
 
 positional arguments:
@@ -23,6 +24,7 @@ optional arguments:
   -I <dir>, --include-dir <dir>
                         adds directory to include search path
   -std=c++11            selects the C++11 language standard
+  -std=c99              selects the C99 language standard
   -std=c++14            selects the C++14 language standard
   -std=c++17            selects the C++17 language standard
   -a, --all-comments, -fparse-all-comments
@@ -33,4 +35,7 @@ optional arguments:
                         words
   -p <full-file-path>, --personal-dict <full-file-path>
                         specify the fullpath to a personal dictionary
+  -c, --collect         output deduplicated list of unrecognized words
+  -x <extra-argument-to-clang>, --extra-clang-arg <extra-argument-to-clang>
+                        extra argument for clang
 ```
