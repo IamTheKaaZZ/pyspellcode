@@ -1,9 +1,15 @@
-/* First line of main doxygen in example2.
- * @throws someException typoInDoxygenThrows
- * @returns 0
+/*
+ * Main function example2.cpp.
+ * Not a Doxygen comment, but typos here are spppoted.
+ * So long as we pass all-comments.
  */
 int main() {
-  return 0;
+  return 0; /// returms 0, this comment is invissssible.
+  /*
+    This cstyle comment is invissssible. */
 }
 
-// orange typoInCommentAtOutermostScope apple
+// Invissssible comment.
+
+// Spottttted, because attached to function.
+void foo() {}
