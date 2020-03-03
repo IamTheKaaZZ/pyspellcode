@@ -1,6 +1,8 @@
-/* First line of main doxygen in example1.
- * @returns typoInDoxygenReturns
+/** Main function example1.cpp.
+ * @throws someException bad imput.
+ * @returns intt
  */
 int main() {
-  return 0; // typoInAComment
+  /** returrns 0, this comment is invissssible */
+  return 0; // typoInAComment, invissssible
 }
