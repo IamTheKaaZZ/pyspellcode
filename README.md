@@ -12,7 +12,6 @@ For the most up-to-date command line argument usage, run the script with the `--
 
 ```
 $ ./spell-check.py --help
-```
 usage: spell-check.py [-h] [-v] [-I <dir>] [-std=c++11] [-std=c99]
                       [-std=c++14] [-std=c++17] [-a] [-e]
                       [--show-file-progress] [-p <full-file-path>] [-c]
@@ -42,3 +41,4 @@ optional arguments:
   -c, --collect         output deduplicated list of unrecognized words
   -x <extra-argument-to-clang>, --extra-clang-arg <extra-argument-to-clang>
                         extra argument for clang
+```
