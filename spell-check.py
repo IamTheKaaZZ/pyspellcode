@@ -35,7 +35,10 @@ def extant_file(arg):
 # Setup some command line argument parsing...
 # Note that convention for help text is to have first letter of string as
 # lower-case and to not end with any punctuation.
-parser = argparse.ArgumentParser()
+parser = argparse.ArgumentParser(
+    description="""
+    Extract and spellcheck comments from provided C++ source.
+    """)
 parser.add_argument('-v', '--verbose',
     dest='verbose', action='store_true',
     help='gets more verbose to aid with diagnostics')
