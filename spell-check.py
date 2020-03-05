@@ -76,6 +76,9 @@ parser.add_argument('-x', '--extra-clang-arg',
     dest='extraClangArguments', action='append', default=list(),
     metavar='<extra-argument-to-clang>',
     help='extra argument for clang')
+parser.add_argument('--better',
+    dest='better', action='store_true',
+    help='use better implementation based on clang front tool')
 parser.add_argument('filenames',
     metavar='filename', type=extant_file, nargs='+',
     help='filename to inspect')
@@ -96,16 +99,22 @@ files = cmdlineargs.filenames
 # Need various clang options...
 # -fsyntax-only tells clang to only examine syntax and to not generate object file
 clangargs = ["clang", "-Xclang", "-ast-dump", "-fsyntax-only", "-fno-color-diagnostics"]
+toolargs = ["commentparser"]
 clangargs.append('-std=' + langstd)
+toolargs.append('-std=' + langstd)
 if cmdlineargs.all_comments:
     clangargs.append('-fparse-all-comments')
+    toolargs.append('-fparse-all-comments')
 if cmdlineargs.includedirs:
     for includedirs in cmdlineargs.includedirs:
         includedir = string.join(includedirs)
         clangargs.append('-I' + includedir)
 clangargs.extend(cmdlineargs.extraClangArguments)
+toolargs.extend(cmdlineargs.extraClangArguments)
 if cmdlineargs.verbose:
     print("argv for AST generator: {0}".format(clangargs))
+    # FIXME: This message.
+    print("argv for tool: {0}".format(toolargs))
 
 # Note: hunspell has issues with use of the apostrophe character.
 # For details, see: https://github.com/marcoagpinto/aoo-mozilla-en-dict/issues/23
@@ -133,9 +142,44 @@ def check_word(word):
             break
         if not line.startswith("*"):
             isokay = False
+
     return isokay
 
 collectedUnrecognizedWords = set()
+
+def check_file_better(path):
+    argsneeded = toolargs + [path]
+    # FIXME: Do we still need the buffer thing?
+    toolpipe = subprocess.Popen(argsneeded, bufsize=-1, stdout=subprocess.PIPE)
+    filenameShown = False
+    if cmdlineargs.show_file_progress:
+        print("file {0}:".format(path))
+        filenameShown = True
+    misspellings = 0
+    with toolpipe.stdout:
+        for comment in iter(toolpipe.stdout.readline, b''):
+            comment = comment.rstrip()
+            if cmdlineargs.verbose:
+                print("checking: {0}".format(line))
+            words = ["apple"]
+            if cmdlineargs.verbose:
+                print(words)
+            unrecognizedwords = []
+            for word in words:
+                word = word.strip("\"\'").lstrip("(").rstrip(")").strip(string.punctuation)
+                if not check_word(word):
+                    unrecognizedwords.append(word)
+                    misspellings += 1
+            if not unrecognizedwords:
+                continue
+            if cmdlineargs.collect:
+                collectedUnrecognizedWords.update(unrecognizedwords)
+            elif not filenameShown:
+                print("file {0}:".format(path))
+                filenameShown = True
+            if not cmdlineargs.collect or cmdlineargs.show_file_progress:
+                print("  unrecognized words: {1}".format(unrecognizedwords))
+    return misspellings
 
 def check_file(path):
     argsneeded = clangargs + [path]
@@ -266,7 +310,10 @@ def check_file(path):
 
 totalmisspellings = 0
 for file in files:
-    totalmisspellings += check_file(file)
+    if cmdlineargs.better:
+        totalmissspellings += check_file_better(file)
+    else:
+        totalmisspellings += check_file(file)
 
 if cmdlineargs.collect:
     if collectedUnrecognizedWords:
