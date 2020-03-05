@@ -1,8 +1,0 @@
-// apple bat typoooo
-/* test test */
-/* typoooo2 test typo3
-test cat */
-test-typo4-apple
-test typo5_typo_6 apple_good
-test typo7(typo8) apple(good)
-apple'good
