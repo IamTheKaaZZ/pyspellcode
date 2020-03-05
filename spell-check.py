@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #
 # Copyright (c) 2018 Louis Langholtz https://github.com/louis-langholtz/pyspellcode
 #
@@ -18,11 +18,6 @@
 #    misrepresented as being the original software.
 # 3. This notice may not be removed or altered from any source distribution.
 
-# Python script requiring python 2.7
-# For python 2 documentation, see: https://docs.python.org/2/index.html
-
-# Bring in stuff that'll be used...
-from __future__ import print_function
 import sys, subprocess, string, re, argparse, os
 
 # Function to check that given argument names a file that exists.
@@ -134,15 +129,15 @@ def check_word(word):
         return False
     if not word:
         return True
-    hunspellpipe.stdin.write(word + "\n")
+    hunspellpipe.stdin.write((word + "\n").encode("utf-8"))
     hunspellpipe.stdin.flush()
     isokay = True
     for line in iter(hunspellpipe.stdout.readline, b''):
+        line = line.decode("utf-8")
         if not line.rstrip("\n"):
             break
         if not line.startswith("*"):
             isokay = False
-
     return isokay
 
 collectedUnrecognizedWords = set()
@@ -160,6 +155,7 @@ def check_file_better(path):
     misspellings = 0
     with toolpipe.stdout:
         for comment in iter(toolpipe.stdout.readline, b''):
+            comment = comment.decode("utf-8")
             comment = comment.rstrip()
             if cmdlineargs.verbose:
                 print("checking: {0}".format(comment))
@@ -204,6 +200,7 @@ def check_file(path):
         filenameShown = True
     with clangpipe.stdout:
         for line in iter(clangpipe.stdout.readline, b''):
+            line = line.decode("utf-8")
             line = line.rstrip()
             if cmdlineargs.verbose:
                 print("checking: {0}".format(line))
