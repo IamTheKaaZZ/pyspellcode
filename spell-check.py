@@ -150,7 +150,9 @@ collectedUnrecognizedWords = set()
 def check_file_better(path):
     argsneeded = toolargs + [path]
     # FIXME: Do we still need the buffer thing?
-    toolpipe = subprocess.Popen(argsneeded, bufsize=-1, stdout=subprocess.PIPE)
+    dummy = ["cat", "dummy.txt"]
+    toolpipe = subprocess.Popen(dummy, bufsize=-1, stdout=subprocess.PIPE)
+    # toolpipe = subprocess.Popen(argsneeded, bufsize=-1, stdout=subprocess.PIPE)
     filenameShown = False
     if cmdlineargs.show_file_progress:
         print("file {0}:".format(path))
@@ -160,13 +162,13 @@ def check_file_better(path):
         for comment in iter(toolpipe.stdout.readline, b''):
             comment = comment.rstrip()
             if cmdlineargs.verbose:
-                print("checking: {0}".format(line))
-            words = ["apple"]
+                print("checking: {0}".format(comment))
+            words = re.split("[\s_()\[\]\"'-]+", comment)
             if cmdlineargs.verbose:
                 print(words)
             unrecognizedwords = []
             for word in words:
-                word = word.strip("\"\'").lstrip("(").rstrip(")").strip(string.punctuation)
+                word = word.strip(string.punctuation)
                 if not check_word(word):
                     unrecognizedwords.append(word)
                     misspellings += 1
@@ -178,7 +180,7 @@ def check_file_better(path):
                 print("file {0}:".format(path))
                 filenameShown = True
             if not cmdlineargs.collect or cmdlineargs.show_file_progress:
-                print("  unrecognized words: {1}".format(unrecognizedwords))
+                print("  unrecognized words: {0}".format(unrecognizedwords))
     return misspellings
 
 def check_file(path):
@@ -311,7 +313,7 @@ def check_file(path):
 totalmisspellings = 0
 for file in files:
     if cmdlineargs.better:
-        totalmissspellings += check_file_better(file)
+        totalmisspellings += check_file_better(file)
     else:
         totalmisspellings += check_file(file)
 
