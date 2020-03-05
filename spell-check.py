@@ -18,6 +18,9 @@
 #    misrepresented as being the original software.
 # 3. This notice may not be removed or altered from any source distribution.
 
+# This is a modified version of Langholtz original script.
+# See: https://github.com/peterwicksstringfield/pyspellcode
+
 import sys, subprocess, string, re, argparse, os
 
 # Function to check that given argument names a file that exists.
