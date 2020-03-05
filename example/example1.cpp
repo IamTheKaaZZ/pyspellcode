@@ -6,3 +6,9 @@ int main() {
   /** returrns 0, this comment is invissssible */
   return 0; // typoInAComment, invissssible
 }
+
+
+//@param this typo on fooFUUNction is spotted.
+void foo() {
+
+}
