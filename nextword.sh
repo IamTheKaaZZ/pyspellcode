@@ -6,4 +6,4 @@ function popline() {
 }
 export word=$(popline wordlist)
 echo $word
-emacsclient $(ag -l "$word" stan/math) $(ag -l "$word" test/)
+emacsclient $(ag -l "$word" ../stan/src) $(ag -l "$word" ../stan/test/)

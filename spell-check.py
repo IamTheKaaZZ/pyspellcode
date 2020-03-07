@@ -298,7 +298,7 @@ def check_file_with_tool(path):
             comment = comment.rstrip()
             if cmdlineargs.verbose:
                 print("checking: {0}".format(comment))
-            words = re.split("[\s,.;:&_^()[\\]<>\"'{}=\\-+*/\\\\]+", comment)
+            words = re.split("[\s,.;?!:&_^()[\\]<>\"'{}=\\-+*/\\\\]+", comment)
             if cmdlineargs.verbose:
                 print(words)
             unrecognizedwords = []
