@@ -13,11 +13,10 @@ fi
 mkdir -p $path_to_llvm_project/clang-tools-extra/$name_of_tool
 echo "Patching llvm project to include tool ..."
 # Preserve modification time to avoid unnecessary recompiling.
-cp -p clang_stuff/CMakeLists_patched $path_to_llvm_project/clang-tools-extra/CMakeLists.txt
 cp -p clang_stuff/extract-comments_CMakeLists.txt $path_to_llvm_project/clang-tools-extra/$name_of_tool/CMakeLists.txt
 cp -p clang_stuff/ExtractComments.cpp $path_to_llvm_project/clang-tools-extra/$name_of_tool/$tool_cpp
-cp -p clang_stuff/ASTContext.h_patched $path_to_llvm_project/clang/include/clang/AST/ASTContext.h
 cd $path_to_llvm_project
+git apply ../../clang_stuff/patch_clang_for_extract_comments_tool
 echo "Building tool ..."
 mkdir -p build
 cd build
