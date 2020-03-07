@@ -2,7 +2,7 @@
 This version of pyspellcode has been hacked up to be used on the Stan Math library. Many of the improvements are not Stan specific, consider forking off the non_stan_specific_changes branch.
 
 # pyspellcode
-Python script for using `clang` and `hunspell` for spell checking source code comments. pyspellcode implements two strategies for extracting comments:
+Python script for using `clang` and `hunspell` for spell checking source code comments. It's a little hacky but it "works for me". pyspellcode implements two strategies for extracting comments:
 
 1. (default) Use Clang's built-in AST dump tool. This will traverse all included files, including third party libraries, but it will only spellcheck in the specified files. It will only spellcheck comments that are attached to declarations, in particular, it will not catch this typo:
 
@@ -80,9 +80,7 @@ optional arguments:
 Thanks to Louis Langholtz for the original implementation.
 https://github.com/louis-langholtz/pyspellcode
 
-Thanks to Daniel Beard for the clang tool code.
+and to Daniel Beard for the Clang Tool code.
 https://gist.github.com/daniel-beard?page=1
 
-(... and of course to the developers of Clang and hunspell.)
-
-This fork of pyspellcode incorporates a small amount of modified Clang code.
+and to the developers of Clang and hunspell!
