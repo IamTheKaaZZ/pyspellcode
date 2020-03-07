@@ -4,7 +4,7 @@ This version of pyspellcode has been hacked up to be used on the Stan Math libra
 # pyspellcode
 Python script for using `clang` and `hunspell` for spell checking source code comments. It's a little hacky but it "works for me". pyspellcode implements two strategies for extracting comments:
 
-1. (default) Use Clang's built-in AST dump tool. This will traverse all included files, including third party libraries, but it will only spellcheck in the specified files. It will only spellcheck comments that are attached to declarations, in particular, it will not catch this typo:
+1. (default) Use Clang's built-in AST dump tool. This will traverse all included files, including third party libraries (this is inefficient), but it will only spellcheck in the specified files. It will make some attempt to sensibly-parse doxygen comments and avoid "spellchecking" LaTeX fragments, etc. It will only spellcheck comments that are attached to declarations, in particular, it will not catch this typo:
 
 ```
 // This is attached to the declaration of foo.
@@ -13,25 +13,23 @@ void foo() {
 }
 ```
 
-It will make some attempt to sensibly-parse doxygen comments and avoid "spellchecking" LaTeX fragments, etc.
-
-2. Use a specialized Clang tool. This will traverse only the indicated files, skipping includes, and it will extract all comments in the specified files. It is necessary to build the tool first, which takes a while. It is likely that updates to clang will break the build process. It will report all your LaTeX fragments as unrecognized words.
+2. Use a specialized Clang tool, build on the LibTooling API. This will traverse only the indicated files, skipping includes (much faster), and it will extract all comments in the specified files. It is necessary to build the tool first, which takes a while. It is likely that updates to clang will break the build process. It will report all your LaTeX fragments as unrecognized words.
 
 # Usage
 
-0. (install clang and hunspell)
-1. git clone
+0. (install Clang and hunspell)
+1. git clone https://github.com/peterwicksstringfield/pyspellcode/tree/non_stan_specific_changes
 2. ./spell-check.py example/example1.cpp ...
 3. cd some/where/else
 4. path/to/spell-check.py some_file.cpp
 5. (optionally ...)
 6. cd path/to/spell-check.py
-7.
-8. ./spell-check.py --build-tool
-9. (wait for a long time)
-10. ./spell-check.py --use-tool example/example1.cpp ...
-11. cd some/where/else
-12. path/to/spell-check.py --use-tool --path-to-tool path/to some_file.cpp
+7. (install ninja, the build system the llvm project uses)
+7. ./spell-check.py --build-tool
+8. (wait for a long time)
+9. ./spell-check.py --use-tool example/example1.cpp ...
+10. cd some/where/else
+11. path/to/spell-check.py --use-tool --path-to-tool path/to some_file.cpp
 
 For the most up-to-date command line argument usage, run the script with the `--help` flag (`-h` for short). For example:
 
