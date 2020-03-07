@@ -1,0 +1,42 @@
+From ba10627679d1547af97c560e465b319689c60cfd Mon Sep 17 00:00:00 2001
+From: Peter Wicks Stringfield <peterwicksstringfield@gmail.com>
+Date: Sat, 7 Mar 2020 07:53:32 -0600
+Subject: [PATCH] Patch Clang for extract-comments tool.
+
+---
+ clang-tools-extra/CMakeLists.txt     | 2 ++
+ clang/include/clang/AST/ASTContext.h | 8 ++++++++
+ 2 files changed, 10 insertions(+)
+
+diff --git a/clang-tools-extra/CMakeLists.txt b/clang-tools-extra/CMakeLists.txt
+index 57bb97057..f11696183 100644
+--- a/clang-tools-extra/CMakeLists.txt
++++ b/clang-tools-extra/CMakeLists.txt
+@@ -31,3 +31,5 @@ CMAKE_DEPENDENT_OPTION(CLANG_ENABLE_CLANGD "Build clangd language server" ON
+ if (CLANG_ENABLE_CLANGD)
+   add_subdirectory(clangd)
+ endif()
++
++add_subdirectory(extract-comments)
+diff --git a/clang/include/clang/AST/ASTContext.h b/clang/include/clang/AST/ASTContext.h
+index 92e5921fa..98d388ea4 100644
+--- a/clang/include/clang/AST/ASTContext.h
++++ b/clang/include/clang/AST/ASTContext.h
+@@ -721,6 +721,14 @@ public:
+   RawComment *getRawCommentForDeclNoCache(const Decl *D) const;
+ 
+ public:
++  /// Return all comments in the translation unit, sorted by FileID and position
++  /// in the source code. This function was patched in during the compilation of
++  /// the specialized clang tool extract-comments. See
++  /// https://github.com/peterwicksstringfield/pyspellcode.
++  RawCommentList &getRawCommentList() {
++    return Comments;
++  }
++
+   void addComment(const RawComment &RC);
+ 
+   /// Return the documentation comment attached to a given declaration.
+-- 
+2.17.1
+

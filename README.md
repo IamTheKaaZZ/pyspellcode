@@ -2,21 +2,36 @@
 This version of pyspellcode has been hacked up to be used on the Stan Math library. Many of the improvements are not Stan specific, consider forking off the non_stan_specific_changes branch.
 
 # pyspellcode
-Python script for using `clang` and `hunspell` for spell checking source code comments.
+Python script for using `clang` and `hunspell` for spell checking source code comments. It's a little hacky but it "works for me". pyspellcode implements two strategies for extracting comments:
 
-pyspellcode implements two strategies for extracting comments:
-1. (default) Use Clang's built-in AST dump tool. This will traverse all included files, including third party libraries, and it will only extract comments that are attached to declarations.
-2. Use a specialized Clang tool. This will traverse only the indicated files, skipping includes, and it will extract all comments. It is necessary to build the tool first, which takes a while. It is likely that updates to clang will break the build process.
+1. (default) Use Clang's built-in AST dump tool. This will traverse all included files, including third party libraries, but it will only spellcheck in the specified files. It will only spellcheck comments that are attached to declarations, in particular, it will not catch this typo:
+
+```
+// This is attached to the declaration of foo.
+void foo() {
+  // This typooo filled comment is not attached to a declaration.
+}
+```
+
+It will make some attempt to sensibly-parse doxygen comments and avoid "spellchecking" LaTeX fragments, etc.
+
+2. Use a specialized Clang tool. This will traverse only the indicated files, skipping includes, and it will extract all comments in the specified files. It is necessary to build the tool first, which takes a while. It is likely that updates to clang will break the build process. It will report all your LaTeX fragments as unrecognized words.
 
 # Usage
 
 0. (install clang and hunspell)
 1. git clone
-2. pyspellcode/spell-check.py example/example1.cpp ...
-3. (optionally ...)
-4. pyspellcode/spell-check.py --build-tool
-5. (wait for a long time)
-6. pyspellcode/spell-check.py --use-tool example/example1.cpp ...
+2. ./spell-check.py example/example1.cpp ...
+3. cd some/where/else
+4. path/to/spell-check.py some_file.cpp
+5. (optionally ...)
+6. cd path/to/spell-check.py
+7.
+8. ./spell-check.py --build-tool
+9. (wait for a long time)
+10. ./spell-check.py --use-tool example/example1.cpp ...
+11. cd some/where/else
+12. path/to/spell-check.py --use-tool --path-to-tool path/to some_file.cpp
 
 For the most up-to-date command line argument usage, run the script with the `--help` flag (`-h` for short). For example:
 
@@ -25,7 +40,7 @@ usage: spell-check.py [-h] [-v] [-I <dir>] [-std=c99] [-std=c++11]
                       [-std=c++14] [-std=c++17] [--doxygen-only] [-e]
                       [--show-file-progress] [-p <full-file-path>] [-c]
                       [-x <extra-argument-to-clang>] [--use-tool]
-                      [--build-tool]
+                      [--build-tool] [--path-to-tool <path-to-tool>]
                       [filename [filename ...]]
 
 Extract and spellcheck comments from provided C++ source.
@@ -56,6 +71,8 @@ optional arguments:
                         extra argument for clang
   --use-tool            use specialized Clang Tool to extract comments
   --build-tool          build specialized Clang Tool; slow!
+  --path-to-tool <path-to-tool>
+                        path to specialized build tool, default to CWD
 ```
 
 # Additional
@@ -63,9 +80,7 @@ optional arguments:
 Thanks to Louis Langholtz for the original implementation.
 https://github.com/louis-langholtz/pyspellcode
 
-Thanks to Daniel Beard for the clang tool code.
+and to Daniel Beard for the Clang Tool code.
 https://gist.github.com/daniel-beard?page=1
 
-(... and of course to the developers of Clang and hunspell.)
-
-This fork of pyspellcode incorporates a small amount of modified Clang code.
+and to the developers of Clang and hunspell!

@@ -44,7 +44,7 @@ parser.add_argument('-v', '--verbose',
     dest='verbose', action='store_true',
     help='gets more verbose to aid with diagnostics')
 parser.add_argument('-I', '--include-dir',
-    dest='includedirs', nargs=1, metavar='<dir>', action='append',
+    dest='includedirs', action='append', metavar='<dir>', nargs=1,
     help='adds directory to include search path, ignored if --use-tool is set')
 parser.add_argument('-std=c99',
     dest='langstd', action='store_const', const='c99',
@@ -68,7 +68,7 @@ parser.add_argument('--show-file-progress',
     dest='show_file_progress', action='store_true',
     help='shows filenames and results even when no unrecognized words')
 parser.add_argument('-p', '--personal-dict',
-    dest='dict', nargs=1, metavar='<full-file-path>',
+    dest='dict', metavar='<full-file-path>', nargs=1,
     help='specify the fullpath to a personal dictionary')
 parser.add_argument('-c', '--collect',
     dest='collect', action='store_true',
@@ -82,15 +82,16 @@ parser.add_argument('--use-tool',
     help='use specialized Clang Tool to extract comments')
 parser.add_argument('--build-tool',
     dest='build_tool', action='store_true',
-    help='build specialized Clang Tool; slow!')
+    help='build specialized Clang Tool and exit (no spellchecking); slow!')
+parser.add_argument('--path-to-tool',
+    dest='path_to_tool', action='store', default=".",
+    metavar='<path-to-tool>',
+    help='path to specialized build tool, default to CWD')
 parser.add_argument('filenames',
     metavar='filename', type=require_extant_file, nargs='*',
     help='filename to inspect')
 
 cmdlineargs = parser.parse_args()
-
-if cmdlineargs.dict:
-    dictionary = cmdlineargs.dict
 
 langstd = 'c++11'
 if cmdlineargs.langstd:
@@ -101,18 +102,19 @@ files = cmdlineargs.filenames
 # Need various clang options...
 # -fsyntax-only tells clang to only examine syntax and to not generate object file
 clangargs = ["clang", "-Xclang", "-ast-dump", "-fsyntax-only", "-fno-color-diagnostics"]
-toolargs = ["./extract-comments"]
+toolargs = [cmdlineargs.path_to_tool + "/extract-comments"]
 clangargs.append('-std=' + langstd)
-toolargs.append('-std=' + langstd)
+toolargs.append('--extra-arg=-std=' + langstd)
 if not cmdlineargs.doxygen_only:
     clangargs.append('-fparse-all-comments')
-    toolargs.append('-fparse-all-comments')
+    toolargs.append('--extra-arg=-fparse-all-comments')
 if cmdlineargs.includedirs:
     for includedirs in cmdlineargs.includedirs:
-        includedir = string.join(includedirs)
+        includedir = " ".join(includedirs)
         clangargs.append('-I' + includedir)
+        toolargs.append('--extra-arg=-I' + includedir)
 clangargs.extend(cmdlineargs.extraClangArguments)
-toolargs.extend(cmdlineargs.extraClangArguments)
+toolargs.extend(map(lambda s: '--extra-arg=' + s, cmdlineargs.extraClangArguments))
 if cmdlineargs.verbose:
     if cmdlineargs.use_tool:
         print("using specialized Clang Tool: {0}".format(toolargs))
@@ -175,10 +177,18 @@ def check_file(path):
                 print("checking: {0}".format(line))
             astlinenum += 1
             if (foundnum == 0):
+                # We only want to spellcheck comments in the file the user
+                # asked us to spellcheck, not all of its recursive includes, so
+                # we throw out lines until we see one that refers to the file
+                # we are interested in.
                 pos = line.find(path)
                 if (pos == -1):
                     continue
-                foundnum = astlinenum
+                # But this can happen: "TemplateArgument type
+                # 'std::is_function<(lambda at
+                # ../math/stan/math/rev/fun/inverse.hpp:47:29)>"
+                if (line.find("(lambda at") == -1):
+                    foundnum = astlinenum
             match = re.match("^(\W*)(\w.*)$", line)
             #print("lhs=\"{0}\" rhs=\"{1}\"".format(match.group(1), match.group(2)))
             depth = match.group(1)
@@ -275,7 +285,7 @@ def check_file(path):
     return misspellings
 
 def check_file_with_tool(path):
-    argsneeded = toolargs + [path]
+    argsneeded = toolargs + [path] + ['--']
     toolpipe = subprocess.Popen(argsneeded, bufsize=-1, stdout=subprocess.PIPE)
     filenameShown = False
     if cmdlineargs.show_file_progress:
@@ -288,7 +298,7 @@ def check_file_with_tool(path):
             comment = comment.rstrip()
             if cmdlineargs.verbose:
                 print("checking: {0}".format(comment))
-            words = re.split("[\s_()\[\]\"'-]+", comment)
+            words = re.split("[\s,.;?!:&_^()[\\]<>\"'{}=\\-+*/\\\\]+", comment)
             if cmdlineargs.verbose:
                 print(words)
             unrecognizedwords = []
@@ -309,8 +319,12 @@ def check_file_with_tool(path):
     return misspellings
 
 if cmdlineargs.build_tool:
+    if not extant_file("./internals/build_clang_tool.sh"):
+        print("Must be inside pyspellcode directory to build tool.")
+        exit(1)
     try:
-        subprocess.check_call("./clang_stuff/build_clang_tool.sh", shell=True)
+        subprocess.check_call("./internals/build_clang_tool.sh", shell=True)
+        exit(0)
     except subprocess.CalledProcessError as e:
         print("Failed to build Clang Tool: {0}.".format(e))
         exit(1)
@@ -318,7 +332,7 @@ if cmdlineargs.build_tool:
 totalmisspellings = 0
 for file in files:
     if cmdlineargs.use_tool:
-        if not extant_file("extract-comments"):
+        if not extant_file(cmdlineargs.path_to_tool + "/extract-comments"):
             print("Could not find Clang Tool, did you build it?")
             exit(1)
         totalmisspellings += check_file_with_tool(file)
