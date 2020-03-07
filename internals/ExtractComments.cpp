@@ -52,7 +52,7 @@ public:
 
 static llvm::cl::OptionCategory MyToolCategory("extract-comments Options");
 static cl::extrahelp CommonHelp(CommonOptionsParser::HelpMessage);
-static cl::extrahelp MoreHelp("\nExtracts comments from specified source file.\n\nYou can invoke this tool if you want I guess, but it's intended for internal use by the spell-check.py script.");
+static cl::extrahelp MoreHelp("\nExtracts comments from specified source file.\n\nYou can invoke this tool if you want I guess, but it's intended for internal\nuse by the spell-check.py script.\n");
 int main(int argc, const char **argv) {
   CommonOptionsParser OptionsParser(argc, argv, MyToolCategory);
   ClangTool Tool(OptionsParser.getCompilations(),

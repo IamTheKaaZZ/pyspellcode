@@ -1,5 +1,5 @@
 From ba10627679d1547af97c560e465b319689c60cfd Mon Sep 17 00:00:00 2001
-From: Peter Wicks Stringfield <peterwicksstringfield@gmail.com>
+From: Peter Wicks Stringfield <>
 Date: Sat, 7 Mar 2020 07:53:32 -0600
 Subject: [PATCH] Patch Clang for extract-comments tool.
 
@@ -24,7 +24,7 @@ index 92e5921fa..98d388ea4 100644
 +++ b/clang/include/clang/AST/ASTContext.h
 @@ -721,6 +721,14 @@ public:
    RawComment *getRawCommentForDeclNoCache(const Decl *D) const;
- 
+
  public:
 +  /// Return all comments in the translation unit, sorted by FileID and position
 +  /// in the source code. This function was patched in during the compilation of
@@ -35,8 +35,7 @@ index 92e5921fa..98d388ea4 100644
 +  }
 +
    void addComment(const RawComment &RC);
- 
-   /// Return the documentation comment attached to a given declaration.
--- 
-2.17.1
 
+   /// Return the documentation comment attached to a given declaration.
+--
+2.17.1
