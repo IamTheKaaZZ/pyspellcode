@@ -82,7 +82,7 @@ parser.add_argument('--use-tool',
     help='use specialized Clang Tool to extract comments')
 parser.add_argument('--build-tool',
     dest='build_tool', action='store_true',
-    help='build specialized Clang Tool; slow!')
+    help='build specialized Clang Tool and exit (no spellchecking); slow!')
 parser.add_argument('--path-to-tool',
     dest='path_to_tool', action='store', default=".",
     metavar='<path-to-tool>',
@@ -324,6 +324,7 @@ if cmdlineargs.build_tool:
         exit(1)
     try:
         subprocess.check_call("./internals/build_clang_tool.sh", shell=True)
+        exit(0)
     except subprocess.CalledProcessError as e:
         print("Failed to build Clang Tool: {0}.".format(e))
         exit(1)
