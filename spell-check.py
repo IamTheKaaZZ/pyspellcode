@@ -319,11 +319,11 @@ def check_file_with_tool(path):
     return misspellings
 
 if cmdlineargs.build_tool:
-    if not extant_file("./clang_stuff/build_clang_tool.sh"):
+    if not extant_file("./internals/build_clang_tool.sh"):
         print("Must be inside pyspellcode directory to build tool.")
         exit(1)
     try:
-        subprocess.check_call("./clang_stuff/build_clang_tool.sh", shell=True)
+        subprocess.check_call("./internals/build_clang_tool.sh", shell=True)
     except subprocess.CalledProcessError as e:
         print("Failed to build Clang Tool: {0}.".format(e))
         exit(1)
