@@ -101,7 +101,7 @@ files = cmdlineargs.filenames
 
 # Need various clang options...
 # -fsyntax-only tells clang to only examine syntax and to not generate object file
-clangargs = ["clang", "-Xclang", "-ast-dump", "-fsyntax-only", "-fno-color-diagnostics"]
+clangargs = ["clang++", "-Xclang", "-ast-dump", "-fsyntax-only", "-fno-color-diagnostics", "-Wno-error=deprecated"]
 toolargs = [cmdlineargs.path_to_tool + "/extract-comments"]
 clangargs.append('-std=' + langstd)
 toolargs.append('--extra-arg=-std=' + langstd)
